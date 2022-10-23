@@ -15,11 +15,20 @@ import java.util.Scanner;
  */
 public class StuInfView {
 
-    private boolean loop = true;    //控制显示菜单
-    private char key = ' ';         //接收用户选择
-    private StuInfService stuInfService = new StuInfService();
-    private Scanner scanner = new Scanner(System.in);
-    private Student student = null;
+    private boolean loop;    //控制显示菜单
+    private char key;         //接收用户选择
+    private StuInfService stuInfService;    //通过该对象调用StuInfService方法
+    private Scanner scanner;
+    private Student student;    //存储用于添加,修改,删除的学生对象
+
+    public StuInfView() {
+        loop = true;
+        key = ' ';
+        stuInfService = new StuInfService();
+        scanner = new Scanner(System.in);
+        student = null;
+    }
+
 
     public void delStudent() {
     }
@@ -62,7 +71,7 @@ public class StuInfView {
             student.setEmail(email);
             //调用StuInfService add方法
             if (!stuInfService.add(student)) {
-                System.out.println(student.toString() + "添加失败," + no + "已存在");
+                System.out.println("[" + no + "," + name + "]" + "添加失败," + no + "已存在");
             } else {
                 count = 1;
             }
@@ -76,7 +85,8 @@ public class StuInfView {
     public void update() {
     }
 
-    public void listStudent() {
+    public void listStudent() throws IOException, ClassNotFoundException {
+        stuInfService.inputFromFile();
         stuInfService.show();
     }
 

@@ -4,8 +4,6 @@ import sims.domain.Student;
 
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,7 +26,12 @@ public class StuInfService {
     //Key: cno 学号, Value: Student  存放学生对象
     private HashMap<String, Student> students = new HashMap<>();
     //数据存放的路径
-    private String path = "e:\\data.dat";
+    private String path;
+
+    public StuInfService() {
+        students = new HashMap<>();
+        path = "StudentInformationManagement/src/sims/data.dat";
+    }
 
     /**
      * 添加学生信息
@@ -43,7 +46,7 @@ public class StuInfService {
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String cno = (String) entry.getKey();
-            if (no == cno) return false;
+            if (no.equals(cno)) return false;
         }
         students.put(no, student);
         return true;
@@ -114,7 +117,7 @@ public class StuInfService {
     public void inputFromFile() throws IOException, ClassNotFoundException {
         //检查文件中是否为空,如果为空则不执行
         File file = new File(path);
-        if (null == file || 0 == file.length() || file.exists()) return;
+        if (0 == file.length()) return;
         //对象输入流
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
         //读取数据
@@ -123,7 +126,7 @@ public class StuInfService {
         for (Object key : keySet) {
             Student student = (Student) studentsFromFile.get(key);
             String no = student.getNo();
-            students.put(no,student);
+            students.put(no, student);
         }
         ois.close();
     }
