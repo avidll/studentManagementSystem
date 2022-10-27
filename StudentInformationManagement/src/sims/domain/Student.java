@@ -15,7 +15,7 @@ import java.io.Serializable;
  * （2）要求：使用文件方式存储数据。
  */
 public class Student implements Serializable {
-    private String no;          //学号
+    private String sno;          //学号
     private String name;        //姓名
     private int age;            //年龄
     private String sex;         //性别
@@ -24,12 +24,12 @@ public class Student implements Serializable {
     private String phone;       //电话
     private String email;       //E-mail
 
-    public String getNo() {
-        return no;
+    public String getSno() {
+        return sno;
     }
 
-    public void setNo(String no) {
-        this.no = no;
+    public void setSno(String no) {
+        this.sno = no;
     }
 
     public String getName() {
@@ -90,8 +90,8 @@ public class Student implements Serializable {
 
     @Override
     public String toString() {
-        return no + "\t" + name + "\t" + age + "\t" +
+        return "|" + sno + "\t" + name + "\t" + age + "\t" +
                 sex + "\t" + birthday + "\t" + address + "\t" +
-                phone + "\t" + email + "\t";
+                phone + "\t" + email + "\t" + "|";
     }
 }

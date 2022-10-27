@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class StuInfService {
 
-    //Key: cno 学号, Value: Student  存放学生对象
+    //Key: sno 学号, Value: Student  存放学生对象
     private HashMap<String, Student> students = new HashMap<>();
     //数据存放的路径
     private String path;
@@ -34,57 +34,86 @@ public class StuInfService {
     }
 
     /**
+     * 判断学号是否存在在数据中,存在返回true
+     * 参数: 学号
+     */
+    public boolean snoIsExist(String sno) {
+        Set<Map.Entry<String, Student>> entrySet = students.entrySet();
+        Iterator<Map.Entry<String, Student>> iterator = entrySet.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Student> entry = iterator.next();
+            if (sno.equals(entry.getKey())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 添加学生信息
      * 判断添加学生学号是否存在,存在 return false
      */
     public boolean add(Student student) {
         //获取添加学生学号
-        String no = student.getNo();
-        //遍历学生Map,判断是否有学号相同的数据
-        Set entrySet = students.entrySet();
-        Iterator iterator = entrySet.iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String cno = (String) entry.getKey();
-            if (no.equals(cno)) return false;
-        }
-        students.put(no, student);
+        String sno = student.getSno();
+        //如果存在
+        if (snoIsExist(sno))
+            return false;
+        else
+            students.put(sno,student);
         return true;
     }
 
     /**
      * 修改学生信息
      */
-    public void update(String cno, Student student) {
-
+    public void update(String sno, Student student) {
+            students.put(sno,student);
     }
 
     /**
-     * 删除学生信息
+     * 删除学生信息: 如果学号存在,则能删除,返回true,否则返回false
      */
-    public boolean del(String cno) {
+    public boolean del(String sno) {
+        //判断要删除学号是否存在
+        if (snoIsExist(sno))
+            students.remove(sno);
+        else
+            return false;
         return true;
     }
 
     /**
      * 通过学号查询学生信息
      */
-    public boolean findByCno(String cno) {
-        return true;
+    public Student findBySno(String sno) {
+        Student student = null;
+        if (snoIsExist(sno))
+            student = students.get(sno);
+        return student;
     }
 
     /**
      * 通过姓名查询学生信息
      */
-    public boolean finByName(String name) {
-        return true;
+    public Student finByName(String name) {
+        Student student = null;
+        //遍历学生map
+        Set<String> keySet = students.keySet();
+        for (Object key:keySet) {
+            Student student1 = students.get(key);
+            if (student1.getName().equals(name))
+                student = student1;
+        }
+        return student;
     }
 
     /**
      * 通过学号排序
      */
-    public void sortByCno() {
-
+    public void sortBySno() {
+        // 因为key为sno,遍历students时,以sno的hash值顺序遍历,即show()是用学号排序
+        show();
     }
 
     /**
@@ -125,7 +154,7 @@ public class StuInfService {
         Set keySet = studentsFromFile.keySet();
         for (Object key : keySet) {
             Student student = (Student) studentsFromFile.get(key);
-            String no = student.getNo();
+            String no = student.getSno();
             students.put(no, student);
         }
         ois.close();

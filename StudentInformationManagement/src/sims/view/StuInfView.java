@@ -1,6 +1,5 @@
 package sims.view;
 
-import sims.domain.Birthday;
 import sims.domain.Student;
 import sims.service.StuInfService;
 import sims.utils.Utility;
@@ -29,13 +28,6 @@ public class StuInfView {
         student = null;
     }
 
-
-    public void delStudent() {
-    }
-
-    public void findStudent() {
-    }
-
     public void addStudent() throws IOException, ClassNotFoundException {
         //读取文件数据
         stuInfService.inputFromFile();
@@ -47,8 +39,8 @@ public class StuInfView {
         boolean flag = true;
         do {
             //输入
-            String no = scanner.next();
-            if (no.equals("#")) {
+            String sno = scanner.next();
+            if (sno.equals("#")) {
                 flag = false;
                 break;
             }
@@ -61,7 +53,7 @@ public class StuInfView {
             email = scanner.next();
             //初始化Student对象
             student = new Student();
-            student.setNo(no);
+            student.setSno(sno);
             student.setName(name);
             student.setAge(age);
             student.setSex(sex);
@@ -71,7 +63,7 @@ public class StuInfView {
             student.setEmail(email);
             //调用StuInfService add方法
             if (!stuInfService.add(student)) {
-                System.out.println("[" + no + "," + name + "]" + "添加失败," + no + "已存在");
+                System.out.println("[" + sno + "," + name + "]" + "添加失败," + sno + "已存在");
             } else {
                 count = 1;
             }
@@ -82,7 +74,50 @@ public class StuInfView {
         }
     }
 
-    public void update() {
+    public void delStudent() throws IOException, ClassNotFoundException {
+        //导入文件信息
+        stuInfService.inputFromFile();
+        //输入
+        System.out.print("请输入要删除学生学号:");
+        String sno = scanner.next();
+        if (stuInfService.del(sno)) {
+            System.out.println("删除" + sno + "成功");
+            stuInfService.outputToFile();
+        } else {
+            System.out.println("删除失败,该学生不存在!");
+        }
+    }
+
+    public void updateStudent() throws IOException, ClassNotFoundException {
+        stuInfService.inputFromFile();
+        System.out.print("请输入要修改学生的学号:");
+        String sno = scanner.next();
+        if (stuInfService.snoIsExist(sno)) {
+            String name, sex, birthday, address, phone, email;
+            int age;
+            name = scanner.next();
+            age = scanner.nextInt();
+            sex = scanner.next();
+            birthday = scanner.next();
+            address = scanner.next();
+            phone = scanner.next();
+            email = scanner.next();
+            //初始化Student对象
+            student = new Student();
+            student.setSno(sno);
+            student.setName(name);
+            student.setAge(age);
+            student.setSex(sex);
+            student.setBirthday(birthday);
+            student.setAddress(address);
+            student.setPhone(phone);
+            student.setEmail(email);
+            stuInfService.update(sno,student);
+        }
+    }
+
+    public void findStudent() throws IOException, ClassNotFoundException {
+
     }
 
     public void listStudent() throws IOException, ClassNotFoundException {
@@ -122,7 +157,7 @@ public class StuInfView {
                     delStudent();
                     break;
                 case '4':
-                    update();
+                    updateStudent();
                     break;
                 case '5':
                     listStudent();
