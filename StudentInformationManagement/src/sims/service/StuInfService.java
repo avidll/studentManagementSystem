@@ -60,7 +60,7 @@ public class StuInfService {
         if (snoIsExist(sno))
             return false;
         else
-            students.put(sno,student);
+            students.put(sno, student);
         return true;
     }
 
@@ -68,7 +68,7 @@ public class StuInfService {
      * 修改学生信息
      */
     public void update(String sno, Student student) {
-            students.put(sno,student);
+        students.put(sno, student);
     }
 
     /**
@@ -100,7 +100,7 @@ public class StuInfService {
         Student student = null;
         //遍历学生map
         Set<String> keySet = students.keySet();
-        for (Object key:keySet) {
+        for (Object key : keySet) {
             Student student1 = students.get(key);
             if (student1.getName().equals(name))
                 student = student1;
@@ -160,19 +160,21 @@ public class StuInfService {
         ois.close();
     }
 
-
     /**
      * 输出学生信息
      */
     public void show() {
         Set<Map.Entry<String, Student>> entrySet = students.entrySet();
         Iterator<Map.Entry<String, Student>> iterator = entrySet.iterator();
-        System.out.println("学号\t姓名\t年龄\t性别\t出生年月\t地址\t电话\tE-mail");
+        System.out.println("学号\t\t姓名\t\t年龄\t\t性别\t\t出生年月\t\t地址\t\t电话\t\tE-mail");
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Student student = (Student) entry.getValue();
-            System.out.println(student.toString());
+            System.out.println(student);
         }
     }
 
+    public HashMap<String, Student> getStudents() {
+        return students;
+    }
 }

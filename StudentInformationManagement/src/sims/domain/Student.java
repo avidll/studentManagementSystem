@@ -90,8 +90,8 @@ public class Student implements Serializable {
 
     @Override
     public String toString() {
-        return "|" + sno + "\t" + name + "\t" + age + "\t" +
-                sex + "\t" + birthday + "\t" + address + "\t" +
-                phone + "\t" + email + "\t" + "|";
+        return sno + "\t\t" + name + "\t\t" + age + "\t\t" +
+                sex + "\t\t" + birthday + "\t\t" + address + "\t\t" +
+                phone + "\t\t" + email + "\t\t";
     }
 }

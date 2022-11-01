@@ -5,6 +5,7 @@ import sims.service.StuInfService;
 import sims.utils.Utility;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 /**
@@ -28,14 +29,12 @@ public class StuInfView {
         student = null;
     }
 
-    public void addStudent() throws IOException, ClassNotFoundException {
-        //读取文件数据
-        stuInfService.inputFromFile();
+    public boolean addStudent() {
         String name, sex, birthday, address, phone, email;
         int age;
         int count = 0; //标识是否有学生加入
         System.out.println("请输入学生信息:");
-        System.out.println("学号\t姓名\t年龄\t性别\t出生年月\t地址\t电话\tE-mail");
+        System.out.println("学号\t\t姓名\t\t年龄\t\t性别\t\t出生年月\t\t地址\t\t电话\t\tE-mail");
         boolean flag = true;
         do {
             //输入
@@ -63,38 +62,44 @@ public class StuInfView {
             student.setEmail(email);
             //调用StuInfService add方法
             if (!stuInfService.add(student)) {
-                System.out.println("[" + sno + "," + name + "]" + "添加失败," + sno + "已存在");
+                System.out.println("[" + sno + "," + name + "]" + "添加失败,学号[" + sno + "]已存在");
             } else {
                 count = 1;
             }
         } while (flag);
-        //如果有学生添加,则把数据添加到文件中
-        if (count == 1) {
-            stuInfService.outputToFile();
+        //如果没有学生添加,返回false
+        if (count == 0) {
+            return false;
         }
+        return true;
     }
 
-    public void delStudent() throws IOException, ClassNotFoundException {
-        //导入文件信息
-        stuInfService.inputFromFile();
+    public boolean delStudent() {
         //输入
         System.out.print("请输入要删除学生学号:");
         String sno = scanner.next();
-        if (stuInfService.del(sno)) {
-            System.out.println("删除" + sno + "成功");
-            stuInfService.outputToFile();
+        if (stuInfService.snoIsExist(sno)) {
+            String name = stuInfService.getStudents().get(sno).getName();
+            if (stuInfService.del(sno)) {
+                System.out.println("删除[学号:" + sno + ",姓名:" + name + "]成功");
+            }
         } else {
             System.out.println("删除失败,该学生不存在!");
+            return false;
         }
+        return true;
     }
 
-    public void updateStudent() throws IOException, ClassNotFoundException {
-        stuInfService.inputFromFile();
+    public boolean updateStudent() {
         System.out.print("请输入要修改学生的学号:");
         String sno = scanner.next();
         if (stuInfService.snoIsExist(sno)) {
+            System.out.println("\t\t\t学号\t姓名\t年龄\t性别\t出生年月\t地址\t电话\tE-mail");
+            student = stuInfService.getStudents().get(sno);
+            System.out.println("待修改学生信息:" + student.toString());
             String name, sex, birthday, address, phone, email;
             int age;
+            System.out.print("修改后学生信息:" + sno);
             name = scanner.next();
             age = scanner.nextInt();
             sex = scanner.next();
@@ -102,9 +107,7 @@ public class StuInfView {
             address = scanner.next();
             phone = scanner.next();
             email = scanner.next();
-            //初始化Student对象
-            student = new Student();
-            student.setSno(sno);
+            //设置修改后属性
             student.setName(name);
             student.setAge(age);
             student.setSex(sex);
@@ -112,16 +115,44 @@ public class StuInfView {
             student.setAddress(address);
             student.setPhone(phone);
             student.setEmail(email);
-            stuInfService.update(sno,student);
+            stuInfService.update(sno, student);
+            System.out.println("修改完成");
+        } else {
+            System.out.println("输入学号有误,不存在该学生");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 查找学生信息 ch=='1',按学号查找; ch=='2',按姓名查找
+     *
+     * @param ch
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public void findStudent(char ch)  {
+        student = null;
+        if (ch == '1') {
+            System.out.print("请输入学号:");
+            String sno = scanner.next();
+            student = stuInfService.findBySno(sno);
+        } else if (ch == '2') {
+            System.out.print("请输入姓名:");
+            String name = scanner.next();
+            student = stuInfService.finByName(name);
+        } else {
+            return;
+        }
+        if (student != null) {
+            System.out.println(student);
+        } else {
+            System.out.println("输入学号有误,不存在该学生");
         }
     }
 
-    public void findStudent() throws IOException, ClassNotFoundException {
-
-    }
-
-    public void listStudent() throws IOException, ClassNotFoundException {
-        stuInfService.inputFromFile();
+    public void listStudent() {
+        //展示学生信息
         stuInfService.show();
     }
 
@@ -137,6 +168,8 @@ public class StuInfView {
      */
     public void mainMenu() throws IOException, ClassNotFoundException {
         do {
+            //读取文件数据
+            stuInfService.inputFromFile();
             System.out.println("\n=============学生信息管理系统============");
             System.out.println("\t\t\t1 学 生 信 息 录 入");
             System.out.println("\t\t\t2 查 找 学 生 信 息");
@@ -148,16 +181,29 @@ public class StuInfView {
             key = Utility.readChar();
             switch (key) {
                 case '1':
-                    addStudent();
+                    if (addStudent()) {   //添加成功
+                        //更新文件数据
+                        stuInfService.outputToFile();
+                    }
                     break;
                 case '2':
-                    findStudent();
+                    System.out.println("\t\t\t1 按 学 号 查 找");
+                    System.out.println("\t\t\t2 按 姓 名 查 找");
+                    System.out.print("请输入你的选择(1-2): ");
+                    key = Utility.readChar();
+                    findStudent(key);
                     break;
                 case '3':
-                    delStudent();
+                    if (delStudent()) {   //删除成功
+                        //更新文件数据
+                        stuInfService.outputToFile();
+                    }
                     break;
                 case '4':
-                    updateStudent();
+                    if (updateStudent()) {  //修改成功
+                        //更新文件数据
+                        stuInfService.outputToFile();
+                    }
                     break;
                 case '5':
                     listStudent();
