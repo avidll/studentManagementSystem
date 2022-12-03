@@ -176,8 +176,9 @@ public class StuInfView {
             System.out.println("\t\t\t3 删 除 学 生 信 息");
             System.out.println("\t\t\t4 修 改 学 生 信 息");
             System.out.println("\t\t\t5 学 生 信 息 列 表");
-            System.out.println("\t\t\t6 退      出");
-            System.out.print("请输入你的选择(1-6): ");
+            System.out.println("\t\t\t6 从 文 件 录 入 信 息");
+            System.out.println("\t\t\t7 退      出");
+            System.out.print("请输入你的选择(1-7): ");
             key = Utility.readChar();
             switch (key) {
                 case '1':
@@ -208,7 +209,7 @@ public class StuInfView {
                 case '5':
                     listStudent();
                     break;
-                case '6':
+                case '7':
                     exit();
                     break;
             }
