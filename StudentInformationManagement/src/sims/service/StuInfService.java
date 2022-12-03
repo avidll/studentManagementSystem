@@ -71,11 +71,14 @@ public class StuInfService {
      * 修改学生信息
      */
 
-    public void addfromtxt() throws IOException{
+    /**
+     * 从txt文件添加学生信息
+     */
+    public void addfromtxt(String path) throws IOException{
         String s;
         String[] spil;
         Student student;
-        FileInputStream fileInputStream = new FileInputStream("D://Studentinfo.txt");
+        FileInputStream fileInputStream = new FileInputStream(path);
         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         while ((s=bufferedReader.readLine())!=null){
