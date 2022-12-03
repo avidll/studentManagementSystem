@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 
 /**
  * 1. 完成对学生信息的各种操作 增删改查(crud)
@@ -67,6 +70,31 @@ public class StuInfService {
     /**
      * 修改学生信息
      */
+
+    /**
+     * 从txt文件添加学生信息
+     */
+    public void addfromtxt(String path) throws IOException{
+        String s;
+        String[] spil;
+        Student student;
+        FileInputStream fileInputStream = new FileInputStream(path);
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        while ((s=bufferedReader.readLine())!=null){
+            spil = s.split(" ");
+            student  = new Student();
+            student.setSno(spil[0]);
+            student.setName(spil[1]);
+            student.setAge(Integer.parseInt(spil[2]));
+            student.setSex(spil[3]);
+            student.setBirthday(spil[4]);
+            student.setAddress(spil[5]);
+            student.setPhone(spil[6]);
+            student.setEmail(spil[7]);
+            students.put(spil[0],student);
+        }
+    }
     public void update(String sno, Student student) {
         students.put(sno, student);
     }
